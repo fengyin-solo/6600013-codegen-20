@@ -92,6 +92,20 @@ export default function Sidebar() {
       </div>
 
       {/* Export */}
+      <div>
+        <label className="text-xs text-gray-400 block mb-1">查看模式</label>
+        <button onClick={() => store.toggleGrayscale()}
+          className={`w-full px-3 py-2 rounded text-sm font-medium flex items-center justify-center gap-2 ${store.grayscaleMode ? 'bg-gray-500 text-white' : 'bg-gray-700 hover:bg-gray-600'}`}>
+          {store.grayscaleMode ? '⬛ 黑白打样中（点击还原彩色）' : '🎨 开启黑白打样'}
+        </button>
+        {store.grayscaleMode && (
+          <p className="text-xs text-gray-400 mt-1 leading-relaxed">
+            预览和导出均会以灰度呈现，便于检查层次与对比度。
+          </p>
+        )}
+      </div>
+
+      {/* Export */}
       <div className="flex gap-2 mt-2">
         <button onClick={() => store.exportSvg()} className="flex-1 py-2 bg-teal-600 rounded text-sm font-medium">⬇ SVG</button>
         <button onClick={() => store.exportPng()} className="flex-1 py-2 bg-rose-600 rounded text-sm font-medium">⬇ PNG</button>

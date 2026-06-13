@@ -9,6 +9,7 @@ interface DesignStore extends DesignParams {
   setTheme: (id: string) => void
   randomSeed: () => void
   setSvgContent: (s: string) => void
+  toggleGrayscale: () => void
   exportSvg: () => void
   exportPng: () => void
 }
@@ -25,6 +26,7 @@ export const useDesignStore = create<DesignStore>((set, get) => ({
   palette: THEMES[0].colors,
   width: 800,
   height: 1000,
+  grayscaleMode: false,
   svgContent: '',
   setParam: (key, value) => set({ [key]: value } as any),
   setPattern: (p) => set({ pattern: p }),
@@ -34,6 +36,7 @@ export const useDesignStore = create<DesignStore>((set, get) => ({
   },
   randomSeed: () => set({ seed: Math.floor(Math.random() * 99999) }),
   setSvgContent: (s) => set({ svgContent: s }),
+  toggleGrayscale: () => set({ grayscaleMode: !get().grayscaleMode }),
   exportSvg: () => {
     const { svgContent } = get()
     const blob = new Blob([svgContent], { type: 'image/svg+xml' })
@@ -43,7 +46,7 @@ export const useDesignStore = create<DesignStore>((set, get) => ({
     URL.revokeObjectURL(url)
   },
   exportPng: () => {
-    const { svgContent, width, height } = get()
+    const { svgContent, width, height, grayscaleMode } = get()
     const canvas = document.createElement('canvas')
     canvas.width = width; canvas.height = height
     const ctx = canvas.getContext('2d')!
@@ -51,7 +54,11 @@ export const useDesignStore = create<DesignStore>((set, get) => ({
     const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' })
     const url = URL.createObjectURL(svgBlob)
     img.onload = () => {
+      if (grayscaleMode) {
+        ctx.filter = 'grayscale(100%)'
+      }
       ctx.drawImage(img, 0, 0)
+      ctx.filter = 'none'
       URL.revokeObjectURL(url)
       canvas.toBlob(blob => {
         const a = document.createElement('a')

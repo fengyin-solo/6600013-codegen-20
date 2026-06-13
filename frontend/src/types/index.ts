@@ -12,6 +12,7 @@ export interface DesignParams {
   palette: string[]
   width: number
   height: number
+  grayscaleMode: boolean
 }
 
 export interface ColorTheme {
