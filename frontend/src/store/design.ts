@@ -46,7 +46,7 @@ export const useDesignStore = create<DesignStore>((set, get) => ({
     URL.revokeObjectURL(url)
   },
   exportPng: () => {
-    const { svgContent, width, height, grayscaleMode } = get()
+    const { svgContent, width, height } = get()
     const canvas = document.createElement('canvas')
     canvas.width = width; canvas.height = height
     const ctx = canvas.getContext('2d')!
@@ -54,11 +54,7 @@ export const useDesignStore = create<DesignStore>((set, get) => ({
     const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' })
     const url = URL.createObjectURL(svgBlob)
     img.onload = () => {
-      if (grayscaleMode) {
-        ctx.filter = 'grayscale(100%)'
-      }
       ctx.drawImage(img, 0, 0)
-      ctx.filter = 'none'
       URL.revokeObjectURL(url)
       canvas.toBlob(blob => {
         const a = document.createElement('a')

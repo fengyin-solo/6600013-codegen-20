@@ -11,6 +11,30 @@ export function createRng(seed: number) {
 
 export type Rng = ReturnType<typeof createRng>
 
+function hexToRgb(hex: string): [number, number, number] {
+  const h = hex.replace('#', '')
+  const full = h.length === 3 ? h.split('').map(c => c + c).join('') : h
+  return [
+    parseInt(full.substring(0, 2), 16),
+    parseInt(full.substring(2, 4), 16),
+    parseInt(full.substring(4, 6), 16),
+  ]
+}
+
+function rgbToHex(r: number, g: number, b: number): string {
+  return '#' + [r, g, b].map(v => Math.round(v).toString(16).padStart(2, '0')).join('')
+}
+
+export function hexToGrayscale(hex: string): string {
+  const [r, g, b] = hexToRgb(hex)
+  const gray = 0.2126 * r + 0.7152 * g + 0.0722 * b
+  return rgbToHex(gray, gray, gray)
+}
+
+export function grayscalePalette(palette: string[]): string[] {
+  return palette.map(hexToGrayscale)
+}
+
 export function generateSpiral(
   w: number, h: number, iterations: number, scale: number,
   palette: string[], rng: Rng, strokeWidth: number, opacity: number
